@@ -75,7 +75,7 @@ func (c *Client) DelIfEquals(ctx context.Context, key string, value interface{})
 }
 
 //ReadDataFromQueue 阻塞读
-func (c *Client) ReadDataFromQueue(ctx context.Context, f func(queue string, msg interface{}), keys ...string) {
+func (c *Client) ReadDataFromQueue(ctx context.Context, f func(queue string, msg string), keys ...string) {
 	for {
 		data, err := c.BLPop(ctx, time.Minute, keys...).Result()
 		if err != nil {
