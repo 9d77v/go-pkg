@@ -3,39 +3,66 @@ package env
 import (
 	"os"
 	"strconv"
+	"strings"
 )
 
-//GetEnvStr ...
-func GetEnvStr(key, value string) string {
-	data := os.Getenv(key)
-	if data == "" {
-		return value
+//String ...
+func String(key string, value ...string) string {
+	s := os.Getenv(key)
+	if s == "" && len(value) == 1 {
+		return value[0]
 	}
-	return data
+	return s
 }
 
-//GetEnvInt ...
-func GetEnvInt(key string, value int) int {
-	data := os.Getenv(key)
-	if data == "" {
-		return value
+//StringArray ...
+func StringArray(key, sep string, value ...string) []string {
+	ans := []string{}
+	s := os.Getenv(key)
+	if s == "" && len(value) > 0 {
+		ans = value
+	} else {
+		ans = strings.Split(s, sep)
 	}
-	parseData, err := strconv.Atoi(key)
-	if err != nil {
-		return value
-	}
-	return parseData
+	return ans
 }
 
-//GetEnvBool ...
-func GetEnvBool(key string, value bool) bool {
-	data := os.Getenv(key)
-	if data == "" {
-		return value
+//Int ...
+func Int(key string, value ...int) int {
+	s := os.Getenv(key)
+	if s == "" && len(value) == 1 {
+		return value[0]
 	}
-	parseData, err := strconv.ParseBool(data)
-	if err != nil {
-		return value
+	result, _ := strconv.Atoi(s)
+	return result
+}
+
+//Bool ...
+func Bool(key string, value ...bool) bool {
+	s := os.Getenv(key)
+	if s == "" && len(value) == 1 {
+		return value[0]
 	}
-	return parseData
+	parses, _ := strconv.ParseBool(s)
+	return parses
+}
+
+//Float32 ...
+func Float32(key string, value ...float32) float32 {
+	s := os.Getenv(key)
+	if s == "" && len(value) == 1 {
+		return value[0]
+	}
+	parses, _ := strconv.ParseFloat(s, 32)
+	return float32(parses)
+}
+
+//Float64 ...
+func Float64(key string, value ...float64) float64 {
+	s := os.Getenv(key)
+	if s == "" && len(value) == 1 {
+		return value[0]
+	}
+	parses, _ := strconv.ParseFloat(s, 64)
+	return parses
 }

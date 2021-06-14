@@ -6,7 +6,6 @@ import (
 	"log"
 	"math/rand"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -18,8 +17,8 @@ import (
 
 //环境变量
 var (
-	redisAddress  = env.GetEnvStr("REDIS_ADDRESS", "domain.local:7000,domain.local:7001,domain.local:7002,domain.local:7003,domain.local:7004,domain.local:7005")
-	redisPassword = env.GetEnvStr("REDIS_PASSWORD", "")
+	redisAddress  = env.StringArray("REDIS_ADDRESS", ",", "domain.local:7000", "domain.local:7001", "domain.local:7002", "domain.local:7003", "domain.local:7004", "domain.local:7005")
+	redisPassword = env.String("REDIS_PASSWORD")
 	client        *Client
 	once          sync.Once
 )
@@ -38,7 +37,7 @@ func GetClient() *Client {
 
 func newClient() *Client {
 	return &Client{redis.NewUniversalClient(&redis.UniversalOptions{
-		Addrs:    strings.Split(redisAddress, ","),
+		Addrs:    redisAddress,
 		Password: redisPassword,
 	})}
 }
@@ -75,7 +74,7 @@ func (c *Client) DelIfEquals(ctx context.Context, key string, value interface{})
 }
 
 //ReadDataFromQueue 阻塞读
-func (c *Client) ReadDataFromQueue(ctx context.Context, f func(queue string, msg string), keys ...string) {
+func (c *Client) ReadDataFromQueue(ctx context.Context, f func(queue, msg string), keys ...string) {
 	for {
 		data, err := c.BLPop(ctx, time.Minute, keys...).Result()
 		if err != nil {

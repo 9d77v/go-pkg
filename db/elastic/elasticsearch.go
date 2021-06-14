@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	address = env.GetEnvStr("ESADDR", "http://domain.local:9200")
+	address = env.String("ESADDR", "http://domain.local:9200")
 	client  *Client
 	once    sync.Once
 )
